@@ -1,35 +1,70 @@
-API Routes
+# Getting Started with Create React App
 
-User Account Routes
-    app.post('/api/users/register', UserController.register); // --> register new user account
-    app.post('/api/users/login', UserController.login); // --> login  existing account
-    app.post('/api/users/logout', UserController.logout) //  --> logout of account
-    app.get('/api/users/getall', authenticate, UserController.getUsers) //  --> get all user info (must be logged in with a user account; used to test the 'authenticate' function)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Media Post Routes
-    app.post('/api/posts/create', authenticate, PostController.createPost); // --> create new post
-    app.get('/api/posts', authenticate, PostController.getAllPosts) // --> get all posts
-    app.get('/api/posts/:id', authenticate, PostController.getPostById) // --> get post by post's ID
-    app.put('/api/posts/:id', authenticate, PostController.updatePost) // --> update post by post's ID
-    app.delete('/api/posts/:id', authenticate, PostController.deletePost) // --> delete post by post's ID
+## Available Scripts
 
+In the project directory, you can run:
 
-Comments Routes
-    app.post('/api/comments/create', authenticate, CommentController.createComment); // --> add new comment to post
-    app.get('/api/comments/post/:postId', authenticate, CommentController.getCommentsByPost); // --> get comments related to a post by post's ID
-    app.put('/api/comments/:id', authenticate, CommentController.updateComment); // --> update comment by comment's ID
-    app.delete('/api/comments/:id', authenticate, CommentController.deleteComment); // --> delete comment by comment's ID
+### `npm start`
 
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-Likes Routes 
-    app.post('/api/likes/add', authenticate, LikeController.addLike); // --> add new like to a user's post
-    app.get('/api/likes/:postId', authenticate, LikeController.getLikesByPost); // --> get all the likes on a user's post
-    app.delete('/api/likes', authenticate, LikeController.removeLike); // --> remove user's like from a post
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-Friend Requests Routes
-    app.post('/api/friendRequests/send', authenticate, FriendRequestController.sendFriendRequest); // --> send new friend request to user
-    app.post('/api/friendRequests/accept', authenticate, FriendRequestController.acceptFriendRequest); // --> accept friend request from other user
-    app.post('/api/friendRequests/decline', authenticate, FriendRequestController.declineFriendRequest); // --> decline friend request from other user
-    app.get('/api/friendRequests/list/:userId', authenticate, FriendRequestController.listFriendRequests); // --> list user's friend requests
-    app.get('/api/friends/list/:userId', authenticate, FriendRequestController.listFriends); // --> list user's friends (that were accepted)
-    app.post('/api/friends/remove', authenticate, FriendRequestController.removeFriendship); // --> remove a friend ffrom user's friend list
+### `npm test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
