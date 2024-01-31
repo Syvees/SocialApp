@@ -10,7 +10,7 @@ const likeRoutes = require('./routes/like.routes')
 const friendRequestRoutes = require('./routes/friendRequest.routes')
 const app = express();
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
