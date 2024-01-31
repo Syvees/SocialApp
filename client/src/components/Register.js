@@ -9,22 +9,24 @@ const Register = ({ history }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    const registrationData = { 
+      first_name: firstName, 
+      last_name: lastName, 
+      email: email, 
+      username: username, 
+      password: password 
+    };
     try {
-      const response = await axios.post('http://localhost:8000/api/users/register', {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        username,
-        password_hash: password,
-      });
-
+      console.log(registrationData)
+      const response = await axios.post('http://localhost:8000/api/users/register', registrationData, {withCredentials: true});
       if (response.data.success) {
-        // Redirect to Dashboard upon successful registration
-        history.push('/dashboard');
+        history.push('/dashboard')
       }
+      console.log("user added:", registrationData)
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error('Server response:', error.response.data);
     }
   };
 
