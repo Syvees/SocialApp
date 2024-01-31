@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../App.css'; // Import the App.css file
+import { useNavigate } from 'react-router-dom';
 
 const Register = ({ history }) => {
   const [firstName, setFirstName] = useState('');
@@ -8,7 +9,9 @@ const Register = ({ history }) => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
+  
   const handleRegister = async (e) => {
     e.preventDefault();
     const registrationData = { 
@@ -21,10 +24,7 @@ const Register = ({ history }) => {
     try {
       console.log(registrationData)
       const response = await axios.post('http://localhost:8000/api/users/register', registrationData, {withCredentials: true});
-      if (response.data.success) {
-        history.push('/dashboard')
-      }
-      console.log("user added:", registrationData)
+      navigate('/dashboard')
     } catch (error) {
       console.error('Server response:', error.response.data);
     }
