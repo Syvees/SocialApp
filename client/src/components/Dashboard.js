@@ -1,25 +1,25 @@
+// Dashboard.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Posts from './Posts'; // Import the Posts component
 import '../App.css';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null); // State to hold user details
-  const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState(null);
   const [newPostCaption, setNewPostCaption] = useState('');
   const [friends, setFriends] = useState([]);
-  const userId = 5; // Replace with variable user ID as needed
+  const userId = 1; // Replace with dynamic user ID from authentication
 
   useEffect(() => {
+    // Fetch user details and friends list
     const fetchData = async () => {
       try {
-        //const userDetails = await axios.get(`http://localhost:8000/api/users/${userId}`);
-        const userPosts = await axios.get('http://localhost:8000/api/posts');
-        const userFriends = await axios.get(`http://localhost:8000/api/friends/list/${userId}`);
+        // const userDetails = await axios.get(`http://localhost:8000/api/users/${userId}`);
+        const userFriendsResponse = await axios.get(`http://localhost:8000/api/friends/list/${userId}`);
         
-        //setUser(userDetails.data);
-        setPosts(userPosts.data.posts);
-        setFriends(userFriends.data.friends);
+        // setUser(userDetails.data);
+        setFriends(userFriendsResponse.data.friends);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -31,37 +31,22 @@ const Dashboard = () => {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     try {
-      const newPost = await axios.post('http://localhost:8000/api/posts/create', {
+      await axios.post('http://localhost:8000/api/posts/create', {
         user_id: userId,
         caption: newPostCaption,
       });
       setNewPostCaption('');
-      setPosts([...posts, newPost.data.post]);
+      // Optionally, you can also update the posts list here if needed
     } catch (error) {
       console.error('Error creating post:', error);
     }
   };
 
-// Delete post
-  const deleteHandler = (postId) => {
-    axios.delete("http://localhost:8000/api/posts/" + postId)
-    .then(res => {
-        removeFromDom(postId)
-    })
-    .catch((err) => {console.log(err)});    
-} 
-
-const removeFromDom = postId => {
-    setPosts(posts.filter(post => post.id != postId))
-}
-
   return (
     <div className="dashboard-container">
       <h1>Dashboard</h1>
       {user && (
-        <p>
-          Welcome to your dashboard, {user.first_name} {user.last_name}!
-        </p>
+        <p>Welcome to your dashboard, {user.first_name} {user.last_name}!</p>
       )}
       <form onSubmit={handlePostSubmit}>
         <label htmlFor="newPostCaption">New Post Caption:</label>
@@ -82,36 +67,14 @@ const removeFromDom = postId => {
           <ul>
             {friends.map((friend) => (
               <li key={friend.id}>
-                {/* Link to friend's profile */}
-                <Link to={`/friends/${friend.id}`}>
-                  {friend.username}
-                </Link>
+                <Link to={`/friends/${friend.id}`}>{friend.username}</Link>
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      <div className="dashboard-posts-container">
-        <h2>My Posts</h2>
-        {posts.length === 0 ? (
-          <p>No posts available.</p>
-        ) : (
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id}>
-                <strong>Caption:</strong> {post.caption}
-                {/* Render media content if available */}
-                {post.media_content && (
-                  <img src={post.media_content} alt="Post Media" />
-                )} &nbsp;
-                <button onClick = {e => {deleteHandler(post.id)}} className="btn btn-primary btn-sm">Delete</button>
-              </li>
-            ))}
-          </ul> 
-          
-        )} 
-      </div>
+      <Posts userId={userId} />
     </div>
   );
 };

@@ -1,32 +1,94 @@
+// Posts.js
 import React, { useEffect, useState } from 'react';
-import PostsComponent from './Posts'; // Rename the import to match the new component name
-import '../App.css'; // Import the App.css file
+import axios from 'axios';
 
-const Posts = () => {
+const Posts = ({ userId }) => {
   const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState(new Set());
 
-  // Fetch posts data from the server
-  const fetchPosts = async () => {
+  useEffect(() => {
+    const fetchPosts = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/posts');
+            setPosts(response.data.posts.map(post => ({
+                ...post,
+                likeCount: Number.isInteger(post.likeCount) ? post.likeCount : 0
+            })));
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+    };
+
+    fetchPosts();
+}, [userId]);
+
+  const handleLike = async (postId) => {
     try {
-      const response = await fetch('/api/posts'); // Replace with your API endpoint
-      const data = await response.json();
-      setPosts(data);
+      await axios.post('http://localhost:8000/api/likes/add', { user_id: userId, post_id: postId });
+      setLikedPosts(new Set([...likedPosts, postId]));
+      updateLikeCount(postId, true);
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Error adding like:', error);
     }
   };
 
-  // Fetch posts when the component mounts
-  useEffect(() => {
-    fetchPosts();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+  const handleUnlike = async (postId) => {
+    try {
+      await axios.delete('http://localhost:8000/api/likes', { data: { user_id: userId, post_id: postId } });
+      setLikedPosts(new Set([...likedPosts].filter(id => id !== postId)));
+      updateLikeCount(postId, false);
+    } catch (error) {
+      console.error('Error removing like:', error);
+    }
+  };
+
+  const updateLikeCount = (postId, increment) => {
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        let likeCount = Number.isInteger(post.likeCount) ? post.likeCount : 0;
+        return { ...post, likeCount: likeCount + (increment ? 1 : -1) };
+      }
+      return post;
+    }));
+  };
+
+  const deletePost = async (postId) => {
+    try {
+        await axios.delete(`http://localhost:8000/api/posts/${postId}`);
+        setPosts(posts.filter(post => post.id !== postId));
+    } catch (error) {
+        console.error('Error deleting post:', error);
+    }
+  };
 
   return (
-    <div>
-      <h2>User Posts</h2>
-      <PostsComponent posts={posts} /> {/* Use the renamed component */}
+    <div className="dashboard-posts-container">
+        <h2>Posts</h2>
+        {posts.length === 0 ? (
+            <p>No posts available.</p>
+        ) : (
+            <ul>
+                {posts.map((post) => (
+                    <li key={post.id}>
+                        <strong>Caption:</strong> {post.caption}
+                        {post.media_content && (
+                            <img src={post.media_content} alt="Post Media" />
+                        )}
+                        <div>
+                            <span>Likes: {post.likeCount}</span>
+                            {likedPosts.has(post.id) ? (
+                                <button onClick={() => handleUnlike(post.id)}>Unlike</button>
+                            ) : (
+                                <button onClick={() => handleLike(post.id)}>Like</button>
+                            )}
+                            <button onClick={() => deletePost(post.id)}>Delete</button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        )}
     </div>
   );
 };
 
-export default Posts; // Export the renamed component
+export default Posts;

@@ -26,7 +26,7 @@ db.User.hasMany(db.Comment, { foreignKey: 'user_id' });
 db.Comment.belongsTo(db.User, { foreignKey: 'user_id' });
 
 // Post-Comment Associations
-db.Post.hasMany(db.Comment, { foreignKey: 'post_id' });
+db.Post.hasMany(db.Comment, { foreignKey: 'post_id'});
 db.Comment.belongsTo(db.Post, { foreignKey: 'post_id' });
 
 // Like-User Associations
@@ -34,8 +34,8 @@ db.User.hasMany(db.Like, { foreignKey: 'user_id' })
 db.Like.belongsTo(db.User, { foreignKey: 'user_id'})
 
 // Like-Post Associations
-db.Post.hasMany(db.Like, { foreignKey: 'post_id' })
-db.Like.belongsTo(db.Post, { foreignKey: 'post_id'})
+db.Post.hasMany(db.Like, { foreignKey: 'post_id'});
+db.Like.belongsTo(db.Post, { foreignKey: 'post_id' });
 
 // FriendRequest-User Associations
 db.User.hasMany(db.FriendRequest, { foreignKey: 'requestor_user_id' });
