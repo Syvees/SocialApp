@@ -23,6 +23,7 @@ const Register = ({ history }) => {
       username: username, 
       password: password 
     };
+    
     try {
       const response = await axios.post('http://localhost:8000/api/users/register', registrationData, {withCredentials: true});
       navigate('/dashboard')
