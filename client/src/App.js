@@ -5,6 +5,7 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard'; // Import Dashboard component
 import Navbar from './components/Navbar';
 import Friends from './components/Friends'; // Import Friends component
+import EditPost from './components/EditPost';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} /> {/* Add this line for Dashboard */}
           <Route path="/friends" element={<Friends userId={userId} />} />
+          <Route path="/posts/edit/:id" element={<EditPost />}></Route>
         </Routes>
     </Router>
   );
