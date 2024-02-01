@@ -1,104 +1,69 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import '../App.css';
+import React from 'react';
+import { useState, useEffect} from "react";
+import axios from "axios"
+import { Link, useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null); // State to hold user details
-  const [posts, setPosts] = useState([]);
-  const [newPostCaption, setNewPostCaption] = useState('');
-  const [friends, setFriends] = useState([]);
-  const userId = 1; // Replace with variable user ID as needed
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        //const userDetails = await axios.get(`http://localhost:8000/api/users/${userId}`);
-        const userPosts = await axios.get('http://localhost:8000/api/posts');
-        const userFriends = await axios.get(`http://localhost:8000/api/friends/list/${userId}`);
-        
-        //setUser(userDetails.data);
-        setPosts(userPosts.data.posts);
-        setFriends(userFriends.data.friends);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+    const [budget, setBudget] = useState([])
+    const navigate = useNavigate()
 
-    fetchData();
-  }, [userId]);
+    useEffect (() => {
+        axios.get("http://localhost:8000/api/budget") // GET ALL
+        .then(res => {
+            console.log(res.data)
+            setBudget(res.data)
+        })
+        .catch(err => console.log(err))
+    },[])
 
-  const handlePostSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const newPost = await axios.post('http://localhost:8000/api/posts/create', {
-        user_id: userId,
-        caption: newPostCaption,
-      });
-      setNewPostCaption('');
-      setPosts([...posts, newPost.data.post]);
-    } catch (error) {
-      console.error('Error creating post:', error);
+const removeFromDom = budgetId => {
+        setBudget(budget.filter(budget => budget._id != budgetId))
     }
-  };
+    
 
-  return (
-    <div className="dashboard-container">
-      <h1>Dashboard</h1>
-      {user && (
-        <p>
-          Welcome to your dashboard, {user.first_name} {user.last_name}!
-        </p>
-      )}
-      <form onSubmit={handlePostSubmit}>
-        <label htmlFor="newPostCaption">New Post Caption:</label>
-        <input
-          type="text"
-          id="newPostCaption"
-          value={newPostCaption}
-          onChange={(e) => setNewPostCaption(e.target.value)}
-        />
-        <button type="submit">Create Post</button>
-      </form>
 
-      <div className="dashboard-friends-container">
-        <h2>My Friends</h2>
-        {friends.length === 0 ? (
-          <p>No friends available.</p>
-        ) : (
-          <ul>
-            {friends.map((friend) => (
-              <li key={friend.id}>
-                {/* Link to friend's profile */}
-                <Link to={`/friends/${friend.id}`}>
-                  {friend.username}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    return (    
+        <div>
+            <br></br><br></br>
+            <h1>Welcome to iBudget!</h1> 
+            <br></br>
+            <table class="table table-sm">
+                <thead>
+                    <tr class="table-success">
+                        <th>&nbsp;&nbsp;Month & Year</th>
+                        <th>Income</th>
+                        <th>Total Expenses</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {
+                    budget.map((budget, index) => {
+                    return <tr class="table-success" key={budget._id}>
+                        <td>
+                        <td>&nbsp;&nbsp;{budget._id.month} {budget._id.year}  </td>
+                        </td>
+                        <td></td> 
+                        <td>
+                            <p>${budget.totalExpenses}</p>
+                        </td>
+                        <td>
+                            <p>
+                                <Link to={"/details/" + budget._id.year+ "/" + budget._id.month + "/" + budget.totalExpenses}>Details</Link>&nbsp;&nbsp;&nbsp;
+                                <Link to={"/income/" + budget._id.year+ "/" + budget._id.month}>Edit Income</Link>&nbsp;&nbsp;&nbsp;                                 
+                            </p>
+                        </td>
+                    </tr>
+                    })
+                }
+            </tbody>
+        </table>
+        <br></br>&nbsp; &nbsp;
+        <Link className="dash"  to={"/addExpense"}>Add an Expense</Link>
+        </div>
+    )
+}   
+export default Dashboard
 
-      <div className="dashboard-posts-container">
-        <h2>My Posts</h2>
-        {posts.length === 0 ? (
-          <p>No posts available.</p>
-        ) : (
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id}>
-                <strong>Caption:</strong> {post.caption}
-                {/* Render media content if available */}
-                {post.media_content && (
-                  <img src={post.media_content} alt="Post Media" />
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default Dashboard;
+// <button onClick = {e => {deleteHandler(budget._id)}} className="btn btn-danger btn-sm">Delete</button>
